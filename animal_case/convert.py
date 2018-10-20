@@ -1,4 +1,6 @@
+# https://github.com/rafa-acioly/animal_case
 import re
+
 
 def _unpack(data):
     if isinstance(data, dict):
@@ -22,7 +24,7 @@ def keys_to_snake_case(content):
     :param content: dict
     :return: dict
     """
-    return {to_snake_case(key): value for key, value in _unpack(content)}
+    return {to_snake_case(key): value for key, value in _unpack(dict(content))}
 
 
 def to_camel_case(value):
@@ -41,10 +43,12 @@ def keys_to_camel_case(content):
     :param content: dict
     :return: dict
     """
-    return {to_camel_case(key): value for key, value in _unpack(content)}
+    return {
+        to_camel_case(key): value for key, value in _unpack(dict(content))
+    }
 
 
-def parse_keys(data={}, types='snake'):
+def parse_keys(data=None, types='snake'):
     """
     Convert all keys for given dict/list to snake case recursively
     the main type are 'snake' and 'camel'
@@ -55,16 +59,35 @@ def parse_keys(data={}, types='snake'):
     if types not in ('snake', 'camel'):
         raise ValueError("Invalid parse type, use snake or camel")
 
-    formatted = {}
-    for key, value in _unpack(
-            keys_to_snake_case(data) if types == 'snake' else keys_to_camel_case(data)
-    ):
-        if isinstance(value, dict):
-            formatted[key] = parse_keys(value, types)
-        elif isinstance(value, list) and len(value) > 0:
-            formatted[key] = []
-            for _, val in enumerate(value):
-                formatted[key].append(parse_keys(val, types))
-        else:
-            formatted[key] = value
-    return formatted
+    if type(data) == list:
+        formatted = []
+    elif type(data) == dict:
+        formatted = {}
+    else:
+        raise ValueError("Invalid data type, use list or dict")
+
+    formatter = keys_to_snake_case if types == 'snake' else keys_to_camel_case
+
+    if type(data) == dict:
+        for key, value in _unpack(formatter(data)):
+            if isinstance(value, dict):
+                formatted[key] = parse_keys(value, types)
+            elif isinstance(value, list) and len(value) > 0:
+                formatted[key] = []
+                for _, val in enumerate(value):
+                    formatted[key].append(parse_keys(val, types))
+            else:
+                formatted[key] = value
+        return formatted
+
+    else:
+        for i, each in enumerate(data):
+            if isinstance(each, dict):
+                formatted.append(parse_keys(each, types))
+            elif isinstance(each, list) and len(each) > 0:
+                formatted.append([])
+                for _, val in enumerate(each):
+                    formatted[i].append(parse_keys(val, types))
+            else:
+                formatted.append(each)
+        return formatted
