@@ -48,7 +48,7 @@ def keys_to_camel_case(content):
     }
 
 
-def animinalify(data, types='snake'):
+def animalify(data, types='snake'):
     """
     Convert all keys for given dict/list to snake case recursively
     the main type are 'snake' and 'camel'
@@ -72,11 +72,11 @@ def animinalify(data, types='snake'):
     if type(data) == dict:
         for key, value in _unpack(formatter(data)):
             if isinstance(value, dict):
-                formatted[key] = animinalify(value, types)
+                formatted[key] = animalify(value, types)
             elif isinstance(value, list) and len(value) > 0:
                 formatted[key] = []
                 for _, val in enumerate(value):
-                    formatted[key].append(animinalify(val, types))
+                    formatted[key].append(animalify(val, types))
             else:
                 formatted[key] = value
         return formatted
@@ -84,11 +84,11 @@ def animinalify(data, types='snake'):
     else:
         for i, each in enumerate(data):
             if isinstance(each, dict):
-                formatted.append(animinalify(each, types))
+                formatted.append(animalify(each, types))
             elif isinstance(each, list) and len(each) > 0:
                 formatted.append([])
                 for _, val in enumerate(each):
-                    formatted[i].append(animinalify(val, types))
+                    formatted[i].append(animalify(val, types))
             else:
                 formatted.append(each)
         return formatted
