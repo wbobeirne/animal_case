@@ -1,6 +1,6 @@
 # Animal case convert recursively your dict/json keys to camelCase or snakeCase.
 
-[![CircleCI](https://circleci.com/gh/rafa-acioly/animal_case/tree/master.svg?style=svg)](https://circleci.com/gh/rafa-acioly/animal_case/tree/master)
+Based on https://github.com/rafa-acioly/animal_case
 
 > Most commonly used to build proxies when we need to create communication between apis
 that have different syntaxes on their endpoint.
