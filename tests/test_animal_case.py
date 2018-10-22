@@ -136,3 +136,9 @@ class TestAnimalCase:
 
         assert 'myName' in converted
         assert 'myTitle' in converted
+
+    def test_convert_list_of_dict_keyword_argss_to_snake_case(self):
+        converted = animalify(myName="daniel", myTitle="Software Developer", types='snake')
+
+        assert 'my_name' in converted
+        assert 'my_title' in converted
