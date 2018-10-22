@@ -48,17 +48,34 @@ def keys_to_camel_case(content):
     }
 
 
-def animalify(data, types='snake'):
+def animalify(*args, **kwargs):
     """
     Convert all keys for given dict/list to snake case recursively
     the main type are 'snake' and 'camel'
-    :param data: dict/list
-    :param types: 'snake'/'camel'
     :return: dict/list
 
     """
+    types = 'camel'
+    if len(args) > 2:
+        raise ValueError("Invalid number of arguments")
+
+    if len(args) == 2:
+        types = args[1]
+
+    if kwargs.get('types'):
+        types = kwargs.get('types')
+        del kwargs['types']
+
     if types not in ('snake', 'camel'):
         raise ValueError("Invalid parse type, use snake or camel")
+
+    if args and kwargs:
+        raise TypeError('animalify() behavior undefined when passed both args and kwargs')
+
+    if args:
+        data = args[0]
+    else:
+        data = kwargs
 
     if type(data) == list:
         formatted = []

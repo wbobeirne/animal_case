@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 import pytest
 
-from ..animal_case import to_camel_case, to_snake_case, animinalify
+from ..animal_case import to_camel_case, to_snake_case, animalify
 
 
 class TestAnimalCase:
@@ -78,7 +78,7 @@ class TestAnimalCase:
         assert to_camel_case(str_snake_case) == 'strInSnakeCase'
 
     def test_convert_dict_keys_to_snake_case(self, camel_case_dict):
-        converted = animinalify(camel_case_dict)
+        converted = animalify(camel_case_dict, 'snake')
 
         assert 'first_key' in converted
         assert 'second_key' in converted
@@ -91,7 +91,7 @@ class TestAnimalCase:
         assert 'super_deep' in converted['third_key'][2]['sub_third_key3'][0]
 
     def test_convert_dict_keys_to_camel_case(self, snake_case_dict):
-        converted = animinalify(snake_case_dict, types='camel')
+        converted = animalify(snake_case_dict)
 
         assert 'firstKey' in converted
         assert 'secondKey' in converted
@@ -103,7 +103,7 @@ class TestAnimalCase:
         assert 'superDeep' in converted['thirdKey'][2]['subThirdKey3'][0]
 
     def test_convert_list_of_dict_keys_to_snake_case(self, camel_case_list):
-        converted = animinalify(camel_case_list, types='snake')[0]
+        converted = animalify(camel_case_list, types='snake')[0]
 
         assert 'first_key' in converted
         assert 'second_key' in converted
@@ -116,7 +116,7 @@ class TestAnimalCase:
         assert 'super_deep' in converted['third_key'][2]['sub_third_key3'][0]
 
     def test_convert_list_of_dict_keys_to_camel_case(self, snake_case_list):
-        converted = animinalify(snake_case_list, types='camel')[0]
+        converted = animalify(snake_case_list)[0]
 
         assert 'firstKey' in converted
         assert 'secondKey' in converted
@@ -129,4 +129,10 @@ class TestAnimalCase:
 
     def test_invalid_option_parse_keys(self):
         with pytest.raises(ValueError):
-            animinalify({}, 'invalid')
+            animalify({}, types='invalid')
+
+    def test_convert_list_of_dict_keyword_argss_to_camel_case(self):
+        converted = animalify(my_name="daniel", my_title="Software Developer")
+
+        assert 'myName' in converted
+        assert 'myTitle' in converted
