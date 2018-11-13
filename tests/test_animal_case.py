@@ -131,14 +131,21 @@ class TestAnimalCase:
         with pytest.raises(ValueError):
             animalify({}, types='invalid')
 
-    def test_convert_list_of_dict_keyword_argss_to_camel_case(self):
+    def test_convert_list_of_dict_keyword_args_to_camel_case(self):
         converted = animalify(my_name="daniel", my_title="Software Developer")
 
         assert 'myName' in converted
         assert 'myTitle' in converted
 
-    def test_convert_list_of_dict_keyword_argss_to_snake_case(self):
+    def test_convert_list_of_dict_keyword_args_to_snake_case(self):
         converted = animalify(myName="daniel", myTitle="Software Developer", types='snake')
 
         assert 'my_name' in converted
         assert 'my_title' in converted
+
+    def test_root_level_values_dont_fail(self):
+        x = {"trustees": ["0x0123"], "nested_key": {"more_stuff": [1, 2, 3]}}
+        converted = animalify(x, types='camel')
+        assert 'moreStuff' in str(converted)
+        assert converted["trustees"] == ["0x0123"]
+        assert converted["nestedKey"]["moreStuff"] == [1, 2, 3]

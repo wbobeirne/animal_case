@@ -82,7 +82,7 @@ def animalify(*args, **kwargs):
     elif type(data) == dict:
         formatted = {}
     else:
-        raise ValueError("Invalid data type, use list or dict")
+        return data
 
     formatter = keys_to_snake_case if types == 'snake' else keys_to_camel_case
 
