@@ -7,6 +7,13 @@ that have different syntaxes on their endpoint.
 
 Imagine that you have to make a `get` request on some endpoint and send a `post` request to another endpoint with some mutate data comming from the first request but each of there endpoints have differents `json` key sintaxies, now you have to convert all the keys recursively and the hell begins...fear no more my friend.
 
+## Tests
+
+```bash
+source venv/bin/activate # assumes you have a virtualenv `venv` installed with required packages
+pytest tests
+```
+
 ## Usage:
 
 
