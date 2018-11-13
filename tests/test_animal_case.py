@@ -143,9 +143,16 @@ class TestAnimalCase:
         assert 'my_name' in converted
         assert 'my_title' in converted
 
-    def test_root_level_values_dont_fail(self):
+    def test_root_level_array_values_dont_fail(self):
         x = {"trustees": ["0x0123"], "nested_key": {"more_stuff": [1, 2, 3]}}
         converted = animalify(x, types='camel')
         assert 'moreStuff' in str(converted)
         assert converted["trustees"] == ["0x0123"]
         assert converted["nestedKey"]["moreStuff"] == [1, 2, 3]
+
+    def test_root_level_tuple_values_dont_fail(self):
+        x = {"trustees": ("0x0123"), "nested_key": {"more_stuff": (1, 2, 3)}}
+        converted = animalify(x, types='camel')
+        assert 'moreStuff' in str(converted)
+        assert converted["trustees"] == "0x0123"
+        assert converted["nestedKey"]["moreStuff"] == (1, 2, 3)
