@@ -109,3 +109,16 @@ from animal_case.convert import to_camel_case
 converted = to_camel_case('my_random_string')
 print(converted) # output: myRandomString
 ```
+
+### preserve regex
+
+If you'd like to keep some keys from being converted, you can pass `preserve_regex`
+to any of the methods. For example, if you wanted to preserve `CONSTANT_CASE`,
+you would do
+
+```py
+from animal_case.convert import to_snake_case
+
+converted = to_snake_case('CONSTANT_CASE', preserve_regex="^[A-Z0-9_]+$")
+print(converted # output: CONSTANT_CASE
+```

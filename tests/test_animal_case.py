@@ -100,6 +100,7 @@ class TestAnimalCase:
         assert 'subThirdKey' in converted['thirdKey'][0]
         assert 'subThirdKey2' in converted['thirdKey'][1]
         assert 'subThirdKey3' in converted['thirdKey'][2]
+
         assert 'superDeep' in converted['thirdKey'][2]['subThirdKey3'][0]
 
     def test_convert_list_of_dict_keys_to_snake_case(self, camel_case_list):
@@ -125,6 +126,7 @@ class TestAnimalCase:
         assert 'subThirdKey' in converted['thirdKey'][0]
         assert 'subThirdKey2' in converted['thirdKey'][1]
         assert 'subThirdKey3' in converted['thirdKey'][2]
+
         assert 'superDeep' in converted['thirdKey'][2]['subThirdKey3'][0]
 
     def test_invalid_option_parse_keys(self):
@@ -156,3 +158,11 @@ class TestAnimalCase:
         assert 'moreStuff' in str(converted)
         assert converted["trustees"] == "0x0123"
         assert converted["nestedKey"]["moreStuff"] == (1, 2, 3)
+
+    def test_convert_dict_keys_to_snake_case_preserve_constant_case(self, camel_case_dict):
+        converted = animalify({**camel_case_dict, **{ 'FOURTH_KEY': 4 }}, 'snake', "^[A-Z0-9_]+$")
+        assert 'FOURTH_KEY' in converted
+
+    def test_convert_dict_keys_to_camel_case_preserve_constant_case(self, snake_case_dict):
+        converted = animalify({**snake_case_dict, **{ 'FOURTH_KEY': 4 }}, preserve_regex="^[A-Z0-9_]+$")
+        assert 'FOURTH_KEY' in converted

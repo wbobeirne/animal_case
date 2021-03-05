@@ -1,50 +1,54 @@
 # https://github.com/rafa-acioly/animal_case
 import re
 
-
 def _unpack(data):
     if isinstance(data, dict):
         return data.items()
     return data
 
-
-def to_snake_case(value):
+def to_snake_case(value, preserve_regex=None):
     """
     Convert camel case string to snake case
     :param value: string
     :return: string
     """
+    if preserve_regex and re.search(preserve_regex, value):
+        return value
     first_underscore = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', value)
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', first_underscore).lower()
 
 
-def keys_to_snake_case(content):
+def keys_to_snake_case(content, preserve_regex=None):
     """
     Convert all keys for given dict to snake case
     :param content: dict
     :return: dict
     """
-    return {to_snake_case(key): value for key, value in _unpack(content)}
+    return {
+        to_snake_case(key, preserve_regex=preserve_regex): value for key, value in _unpack(content)
+    }
 
 
-def to_camel_case(value):
+def to_camel_case(value, preserve_regex=None):
     """
     Convert the given string to camel case
     :param value: string
     :return: string
     """
+    if preserve_regex and re.search(preserve_regex, value):
+        return value
     content = value.split('_')
     return content[0] + ''.join(word.title() for word in content[1:] if not word.isspace())
 
 
-def keys_to_camel_case(content):
+def keys_to_camel_case(content, preserve_regex=None):
     """
     Convert all keys for given dict to camel case
     :param content: dict
     :return: dict
     """
     return {
-        to_camel_case(key): value for key, value in _unpack(dict(content))
+        to_camel_case(key, preserve_regex=preserve_regex): value for key, value in _unpack(dict(content))
     }
 
 
@@ -56,15 +60,25 @@ def animalify(*args, **kwargs):
 
     """
     types = 'camel'
-    if len(args) > 2:
+    preserve_regex = None
+
+    if len(args) > 3:
         raise ValueError("Invalid number of arguments")
 
-    if len(args) == 2:
+    if len(args) >= 2:
         types = args[1]
+    
+    if len(args) == 3:
+        preserve_regex = args[2]
+        
 
     if kwargs.get('types'):
         types = kwargs.get('types')
         del kwargs['types']
+
+    if kwargs.get('preserve_regex'):
+        preserve_regex = kwargs.get('preserve_regex')
+        del kwargs['preserve_regex']
 
     if types not in ('snake', 'camel'):
         raise ValueError("Invalid parse type, use snake or camel")
@@ -87,7 +101,7 @@ def animalify(*args, **kwargs):
     formatter = keys_to_snake_case if types == 'snake' else keys_to_camel_case
 
     if type(data) == dict:
-        for key, value in _unpack(formatter(data)):
+        for key, value in _unpack(formatter(data, preserve_regex=preserve_regex)):
             if isinstance(value, dict):
                 formatted[key] = animalify(value, types)
             elif isinstance(value, list) and len(value) > 0:
